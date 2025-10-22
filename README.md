@@ -90,59 +90,51 @@ Before starting, make sure you have installed:
 
 ## Installation
 
-### 1. Clone the repository
+### Quick Start (Recommended for Development)
 
 ```bash
+# 1. Clone the repository
 git clone <repository-url>
 cd products-bank
-```
 
-### 2. Configure Backend
+# 2. Install ALL dependencies at once
+npm run install:all
 
-```bash
-cd backend
+# 3. Configure environment variables
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 
-# Copy environment variables file
-cp .env.example .env
+# Edit the .env files with your configurations
+# backend/.env - Database, JWT, reCAPTCHA secret
+# frontend/.env - API URL, reCAPTCHA site key
 
-# Edit .env with your configurations
-# nano .env  # or use your preferred editor
-
-# Install dependencies
-npm install
-```
-
-### 3. Configure Frontend
-
-```bash
-cd ../frontend
-
-# Copy environment variables file
-cp .env.example .env
-
-# Edit .env with your configurations
-# nano .env
-
-# Install dependencies
-npm install
-```
-
-### 4. Configure Database
-
-```bash
-# Create MySQL database
+# 4. Setup database
 mysql -u root -p
+# In MySQL console:
 CREATE DATABASE products_bank CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 EXIT;
 
-# Return to backend directory
-cd ../backend
-
-# Run migrations
+# 5. Run migrations and seeds
 npm run migrate
-
-# Run seeders (initial data)
 npm run seed
+
+# 6. Start development (runs backend + frontend simultaneously)
+npm run dev
+```
+
+### Alternative: Manual Installation
+
+If you prefer to install dependencies separately:
+
+```bash
+# Install root dependencies (concurrently)
+npm install
+
+# Install backend dependencies
+npm run install:backend
+
+# Install frontend dependencies
+npm run install:frontend
 ```
 
 ## Configuration
@@ -189,46 +181,78 @@ REACT_APP_ENV=development
 
 ## Usage
 
-### Development Mode
+### Option 1: Development Mode with Concurrently (Recommended)
 
-#### Start Backend
+Run both backend and frontend with a single command:
 
 ```bash
-cd backend
+# From project root
 npm run dev
 ```
 
-Backend server will be available at `http://localhost:5000`
+This will start:
+- ✅ Backend API at `http://localhost:5000`
+- ✅ Frontend React app at `http://localhost:3000`
+- Both processes in one terminal with color-coded logs
 
-#### Start Frontend
+**Stop both:** Press `Ctrl+C` in the terminal
+
+### Option 2: Development Mode (Separate Terminals)
+
+If you prefer to run them separately:
 
 ```bash
+# Terminal 1 - Backend
+cd backend
+npm run dev
+
+# Terminal 2 - Frontend
 cd frontend
 npm start
 ```
 
-Frontend application will be available at `http://localhost:3000`
+### Option 3: Using Docker (Production-like)
 
-### Production Mode
+Run the entire stack (MySQL + Backend + Frontend) with Docker:
+
+```bash
+# First time: Copy docker environment file
+cp .env.docker.example .env.docker
+# Edit .env.docker with your reCAPTCHA keys
+
+# Start all services
+npm run docker:up
+# Or: docker-compose up
+
+# View logs
+npm run docker:logs
+
+# Stop services
+npm run docker:down
+
+# Rebuild and start
+npm run docker:build
+
+# Clean everything (remove volumes)
+npm run docker:clean
+```
+
+Access the application:
+- Frontend: `http://localhost`
+- Backend API: `http://localhost:5000`
+- MySQL: `localhost:3306`
+
+### Production Mode (Manual)
 
 ```bash
 # Backend
 cd backend
 npm start
 
-# Frontend (build)
+# Frontend (build static files)
 cd frontend
 npm run build
-```
-
-### Using Docker
-
-```bash
-# Start all services
-docker-compose up
-
-# Stop services
-docker-compose down
+# Serve the build folder with a web server (nginx, apache, etc.)
 ```
 
 ## Project Structure
@@ -311,24 +335,53 @@ Users with Advisor role must be created by an Administrator through the interfac
 
 ## Available Scripts
 
-### Backend
+### Root (Recommended)
+
+Run these from the project root directory:
 
 ```bash
-npm run dev          # Start in development mode
-npm start            # Start in production mode
-npm run migrate      # Run migrations
-npm run migrate:undo # Revert last migration
-npm run seed         # Run seeds
-npm run seed:undo    # Revert seeds
-npm run lint         # Check code
+# Development
+npm run dev                 # Start backend + frontend simultaneously
+npm run install:all         # Install all dependencies (root + backend + frontend)
+npm run install:backend     # Install only backend dependencies
+npm run install:frontend    # Install only frontend dependencies
+
+# Database
+npm run migrate             # Run migrations
+npm run seed                # Run seeds
+npm run migrate:undo        # Revert last migration
+npm run seed:undo           # Revert seeds
+
+# Docker
+npm run docker:up           # Start all services with Docker
+npm run docker:down         # Stop all Docker services
+npm run docker:build        # Rebuild and start Docker services
+npm run docker:logs         # View Docker logs
+npm run docker:clean        # Stop and remove all volumes
+
+# Individual starts
+npm run start:backend       # Start only backend
+npm run start:frontend      # Build and prepare frontend for production
 ```
 
-### Frontend
+### Backend (from backend/)
+
+```bash
+npm run dev          # Start in development mode with nodemon
+npm start            # Start in production mode
+npm run migrate      # Run database migrations
+npm run migrate:undo # Revert last migration
+npm run seed         # Run database seeders
+npm run seed:undo    # Revert seeders
+npm run lint         # Check code with ESLint
+```
+
+### Frontend (from frontend/)
 
 ```bash
 npm start            # Start in development mode
 npm run build        # Build for production
-npm run lint         # Check code
+npm run lint         # Check code with ESLint
 ```
 
 ## Financial Products

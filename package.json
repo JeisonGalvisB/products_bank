@@ -1,0 +1,37 @@
+{
+  "name": "products-bank",
+  "version": "1.0.0",
+  "description": "Financial Products Sales Management System - Full Stack Application",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run dev --prefix backend\" \"npm start --prefix frontend\"",
+    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend",
+    "install:backend": "npm install --prefix backend",
+    "install:frontend": "npm install --prefix frontend",
+    "start:backend": "npm start --prefix backend",
+    "start:frontend": "npm run build --prefix frontend",
+    "migrate": "npm run migrate --prefix backend",
+    "seed": "npm run seed --prefix backend",
+    "migrate:undo": "npm run migrate:undo --prefix backend",
+    "seed:undo": "npm run seed:undo --prefix backend",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose up --build",
+    "docker:logs": "docker-compose logs -f",
+    "docker:clean": "docker-compose down -v --remove-orphans"
+  },
+  "keywords": [
+    "banking",
+    "financial-products",
+    "sales-management",
+    "nodejs",
+    "react",
+    "mysql",
+    "jwt"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

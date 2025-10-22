@@ -7,34 +7,34 @@
 const ROLES = {
   ADMIN: {
     ID: 1,
-    NAME: 'Administrador' // UI text in Spanish
+    NAME: 'Administrador'
   },
   ADVISOR: {
     ID: 2,
-    NAME: 'Asesor' // UI text in Spanish
+    NAME: 'Asesor'
   }
 };
 
 // Sale statuses
 const SALE_STATUSES = {
-  OPEN: 'Abierto', // UI text in Spanish
-  IN_PROCESS: 'En Proceso', // UI text in Spanish
-  FINISHED: 'Finalizado' // UI text in Spanish
+  OPEN: 'Abierto',
+  IN_PROCESS: 'En Proceso',
+  FINISHED: 'Finalizado'
 };
 
 // Product type IDs (sync with seeds)
 const PRODUCTS = {
   CONSUMER_CREDIT: {
     ID: 1,
-    NAME: 'Credito de Consumo' // UI text in Spanish
+    NAME: 'Credito de Consumo'
   },
   FREE_INVESTMENT_PAYROLL: {
     ID: 2,
-    NAME: 'Libranza Libre Inversión' // UI text in Spanish
+    NAME: 'Libranza Libre Inversión'
   },
   CREDIT_CARD: {
     ID: 3,
-    NAME: 'Tarjeta de Credito' // UI text in Spanish
+    NAME: 'Tarjeta de Credito'
   }
 };
 
