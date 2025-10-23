@@ -10,7 +10,7 @@ const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 const { NotFoundError, ValidationError, AuthorizationError } = require('../utils/errors');
 const logger = require('../utils/logger');
-const { ROLES, PRODUCTS, SALE_STATUS } = require('../utils/constants');
+const { ROLES, PRODUCTS, SALE_STATUSES } = require('../utils/constants');
 
 /**
  * Build Where Clause with Role-Based Filtering
@@ -85,7 +85,7 @@ const findAllSales = async (filters = {}, userRolId, userId, pagination = {}) =>
         {
           model: Product,
           as: 'producto',
-          attributes: ['id', 'nombre', 'tipo']
+          attributes: ['id', 'nombre']
         },
         {
           model: Franchise,
@@ -123,7 +123,6 @@ const findAllSales = async (filters = {}, userRolId, userId, pagination = {}) =>
       id: sale.id,
       productoId: sale.productoId,
       productoNombre: sale.producto.nombre,
-      productoTipo: sale.producto.tipo,
       cupoSolicitado: parseFloat(sale.cupoSolicitado),
       franquiciaId: sale.franquiciaId,
       franquiciaNombre: sale.franquicia ? sale.franquicia.nombre : null,
@@ -172,7 +171,7 @@ const findSaleById = async (id, userRolId, userId) => {
         {
           model: Product,
           as: 'producto',
-          attributes: ['id', 'nombre', 'tipo', 'descripcion']
+          attributes: ['id', 'nombre']
         },
         {
           model: Franchise,
@@ -216,8 +215,6 @@ const findSaleById = async (id, userRolId, userId) => {
       id: sale.id,
       productoId: sale.productoId,
       productoNombre: sale.producto.nombre,
-      productoTipo: sale.producto.tipo,
-      productoDescripcion: sale.producto.descripcion,
       cupoSolicitado: parseFloat(sale.cupoSolicitado),
       franquiciaId: sale.franquiciaId,
       franquiciaNombre: sale.franquicia ? sale.franquicia.nombre : null,
@@ -303,7 +300,7 @@ const createNewSale = async (saleData, userId) => {
       cupoSolicitado: parseFloat(cupoSolicitado),
       franquiciaId: franquiciaId ? parseInt(franquiciaId) : null,
       tasa: tasa ? parseFloat(tasa) : null,
-      estado: estado || SALE_STATUS.OPEN,
+      estado: estado || SALE_STATUSES.OPEN,
       usuarioCreadorId: userId,
       usuarioActualizadorId: userId
     });
@@ -314,7 +311,7 @@ const createNewSale = async (saleData, userId) => {
         {
           model: Product,
           as: 'producto',
-          attributes: ['id', 'nombre', 'tipo']
+          attributes: ['id', 'nombre']
         },
         {
           model: Franchise,
@@ -414,7 +411,7 @@ const updateSaleById = async (id, saleData, userRolId, userId) => {
 
     if (saleData.estado !== undefined) {
       // Validate status
-      const validStatuses = [SALE_STATUS.OPEN, SALE_STATUS.IN_PROCESS, SALE_STATUS.FINISHED];
+      const validStatuses = [SALE_STATUSES.OPEN, SALE_STATUSES.IN_PROCESS, SALE_STATUSES.FINISHED];
       if (!validStatuses.includes(saleData.estado)) {
         throw new ValidationError('Invalid status');
       }
@@ -438,7 +435,7 @@ const updateSaleById = async (id, saleData, userRolId, userId) => {
         {
           model: Product,
           as: 'producto',
-          attributes: ['id', 'nombre', 'tipo']
+          attributes: ['id', 'nombre']
         },
         {
           model: Franchise,
@@ -563,15 +560,15 @@ const getSalesCountByStatus = async (userRolId, userId) => {
     const baseWhereClause = buildWhereClause(userRolId, userId);
 
     const openCount = await Sale.count({
-      where: { ...baseWhereClause, estado: SALE_STATUS.OPEN }
+      where: { ...baseWhereClause, estado: SALE_STATUSES.OPEN }
     });
 
     const inProcessCount = await Sale.count({
-      where: { ...baseWhereClause, estado: SALE_STATUS.IN_PROCESS }
+      where: { ...baseWhereClause, estado: SALE_STATUSES.IN_PROCESS }
     });
 
     const finishedCount = await Sale.count({
-      where: { ...baseWhereClause, estado: SALE_STATUS.FINISHED }
+      where: { ...baseWhereClause, estado: SALE_STATUSES.FINISHED }
     });
 
     return {

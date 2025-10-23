@@ -5,11 +5,10 @@
 
 'use strict';
 
-const { Sale, Product, User, Role } = require('../models');
+const { Sale, Product, User, Role, sequelize } = require('../models');
 const { Op } = require('sequelize');
-const sequelize = require('../config/database');
 const logger = require('../utils/logger');
-const { ROLES, SALE_STATUS } = require('../utils/constants');
+const { ROLES, SALE_STATUSES } = require('../utils/constants');
 
 /**
  * Build Where Clause with Role-Based Filtering
@@ -79,13 +78,13 @@ const getDashboardMetrics = async (userRolId, userId, filters = {}) => {
     // Sales by status
     const salesByStatus = {
       open: await Sale.count({
-        where: { ...whereClause, estado: SALE_STATUS.OPEN }
+        where: { ...whereClause, estado: SALE_STATUSES.OPEN }
       }),
       inProcess: await Sale.count({
-        where: { ...whereClause, estado: SALE_STATUS.IN_PROCESS }
+        where: { ...whereClause, estado: SALE_STATUSES.IN_PROCESS }
       }),
       finished: await Sale.count({
-        where: { ...whereClause, estado: SALE_STATUS.FINISHED }
+        where: { ...whereClause, estado: SALE_STATUSES.FINISHED }
       })
     };
 
@@ -136,7 +135,7 @@ const getSalesGroupedByProduct = async (userRolId, userId, filters = {}) => {
         {
           model: Product,
           as: 'producto',
-          attributes: ['id', 'nombre', 'tipo']
+          attributes: ['id', 'nombre']
         }
       ],
       group: ['productoId', 'producto.id'],
@@ -147,7 +146,6 @@ const getSalesGroupedByProduct = async (userRolId, userId, filters = {}) => {
     const formattedResults = salesByProduct.map(item => ({
       productoId: item.productoId,
       productoNombre: item.producto.nombre,
-      productoTipo: item.producto.tipo,
       count: parseInt(item.dataValues.count),
       totalAmount: parseFloat(item.dataValues.totalAmount || 0),
       averageAmount: parseFloat(parseFloat(item.dataValues.averageAmount || 0).toFixed(2))
@@ -353,7 +351,7 @@ const getRecentSales = async (userRolId, userId, limit = 5) => {
         {
           model: Product,
           as: 'producto',
-          attributes: ['id', 'nombre', 'tipo']
+          attributes: ['id', 'nombre']
         },
         {
           model: User,
@@ -410,7 +408,7 @@ const getTopProducts = async (userRolId, userId, limit = 5, filters = {}) => {
         {
           model: Product,
           as: 'producto',
-          attributes: ['id', 'nombre', 'tipo']
+          attributes: ['id', 'nombre']
         }
       ],
       group: ['productoId', 'producto.id'],
@@ -423,7 +421,6 @@ const getTopProducts = async (userRolId, userId, limit = 5, filters = {}) => {
     const formattedResults = topProducts.map(item => ({
       productoId: item.productoId,
       productoNombre: item.producto.nombre,
-      productoTipo: item.producto.tipo,
       salesCount: parseInt(item.dataValues.salesCount),
       totalAmount: parseFloat(item.dataValues.totalAmount || 0)
     }));

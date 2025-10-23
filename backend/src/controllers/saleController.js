@@ -7,7 +7,7 @@
 
 const saleService = require('../services/saleService');
 const { asyncHandler } = require('../middleware/errorMiddleware');
-const { successResponse, createdResponse, deletedResponse } = require('../utils/responses');
+const { successResponse, createdResponse } = require('../utils/responses');
 const { HTTP_STATUS } = require('../utils/constants');
 const logger = require('../utils/logger');
 
@@ -163,9 +163,11 @@ const deleteSale = asyncHandler(async (req, res) => {
 
   logger.info(`Sale deleted: ID ${id} by user ${currentUser.email}`);
 
-  return deletedResponse(
+  return successResponse(
     res,
-    'Sale deleted successfully'
+    null,
+    'Sale deleted successfully',
+    HTTP_STATUS.OK
   );
 });
 

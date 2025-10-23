@@ -20,16 +20,14 @@ const { HTTP_STATUS } = require('../utils/constants');
 const getAllProducts = asyncHandler(async (req, res) => {
   // Get all products
   const products = await Product.findAll({
-    attributes: ['id', 'nombre', 'tipo', 'descripcion'],
+    attributes: ['id', 'nombre'],
     order: [['id', 'ASC']]
   });
 
   // Format products
   const formattedProducts = products.map(product => ({
     id: product.id,
-    nombre: product.nombre,
-    tipo: product.tipo,
-    descripcion: product.descripcion
+    nombre: product.nombre
   }));
 
   return successResponse(
@@ -51,7 +49,7 @@ const getProductById = asyncHandler(async (req, res) => {
 
   // Get product
   const product = await Product.findByPk(id, {
-    attributes: ['id', 'nombre', 'tipo', 'descripcion']
+    attributes: ['id', 'nombre']
   });
 
   if (!product) {
@@ -62,9 +60,7 @@ const getProductById = asyncHandler(async (req, res) => {
     res,
     {
       id: product.id,
-      nombre: product.nombre,
-      tipo: product.tipo,
-      descripcion: product.descripcion
+      nombre: product.nombre
     },
     'Product retrieved successfully',
     HTTP_STATUS.OK
@@ -159,18 +155,17 @@ const getAllRoles = asyncHandler(async (req, res) => {
 /**
  * Get Product Types
  * GET /api/products/types
- * Returns list of unique product types
+ * Returns list of all product names (types)
  * @requires authMiddleware (verifyAuth)
  */
 const getProductTypes = asyncHandler(async (req, res) => {
-  // Get all products and extract unique types
+  // Get all products
   const products = await Product.findAll({
-    attributes: ['tipo'],
-    group: ['tipo'],
-    order: [['tipo', 'ASC']]
+    attributes: ['id', 'nombre'],
+    order: [['id', 'ASC']]
   });
 
-  const types = products.map(product => product.tipo);
+  const types = products.map(product => product.nombre);
 
   return successResponse(
     res,

@@ -7,7 +7,7 @@
 
 const userService = require('../services/userService');
 const { asyncHandler } = require('../middleware/errorMiddleware');
-const { successResponse, createdResponse, deletedResponse } = require('../utils/responses');
+const { successResponse, createdResponse } = require('../utils/responses');
 const { HTTP_STATUS } = require('../utils/constants');
 const logger = require('../utils/logger');
 
@@ -145,9 +145,11 @@ const deleteUser = asyncHandler(async (req, res) => {
 
   logger.info(`User deleted: ID ${id} by admin ${currentUser.email}`);
 
-  return deletedResponse(
+  return successResponse(
     res,
-    'User deleted successfully'
+    null,
+    'User deleted successfully',
+    HTTP_STATUS.OK
   );
 });
 
