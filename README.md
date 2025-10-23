@@ -1,4 +1,4 @@
-# Products Bank - Financial Products Sales Management System
+**# Products Bank - Financial Products Sales Management System**
 
 Complete web system for managing bank financial product sales with authentication, user roles, and CRUD operations.
 
