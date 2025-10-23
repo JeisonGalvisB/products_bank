@@ -13,7 +13,7 @@ const app = express();
 const logger = require('./utils/logger');
 
 // Server configuration middleware
-const { configureMiddleware } = require('./config/server');
+const { configureServer } = require('./config/server');
 
 // Routes
 const routes = require('./routes');
@@ -27,7 +27,7 @@ const { errorHandler, notFoundHandler } = require('./middleware/errorMiddleware'
  */
 
 // 1. Apply server configuration (CORS, Helmet, Rate Limiting, Body Parser, Morgan)
-configureMiddleware(app);
+configureServer(app);
 
 // 2. Mount API routes
 app.use('/api', routes);
